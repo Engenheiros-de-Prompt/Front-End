@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -7,8 +7,8 @@ import {
   TextField,
   Typography,
   Container,
-  CircularProgress
-} from '@mui/material';
+  CircularProgress,
+} from "@mui/material";
 
 // ==============================================
 
@@ -26,37 +26,39 @@ type Employee = {
 // DADOS MOCKADOS (substituir por chamadas API)
 // ==============================================
 const mockProjects = [
-  { id: 1, name: 'Projeto Alpha' },
-  { id: 2, name: 'Projeto Beta' },
-  { id: 3, name: 'Projeto Gamma' },
+  { id: 1, name: "Projeto Alpha" },
+  { id: 2, name: "Projeto Beta" },
+  { id: 3, name: "Projeto Gamma" },
 ];
 
-const mockEmployeesByProject: { [key: string]: { id: number; name: string; role: string }[] } = {
+const mockEmployeesByProject: {
+  [key: string]: { id: number; name: string; role: string }[];
+} = {
   "1": [
-    { id: 101, name: 'João Silva', role: 'Desenvolvedor Front-end' },
-    { id: 102, name: 'Maria Souza', role: 'UX Designer' },
-    { id: 103, name: 'Carlos Mendes', role: 'Product Owner' },
+    { id: 101, name: "João Silva", role: "Desenvolvedor Front-end" },
+    { id: 102, name: "Maria Souza", role: "UX Designer" },
+    { id: 103, name: "Carlos Mendes", role: "Product Owner" },
   ],
   "2": [
-    { id: 201, name: 'Ana Oliveira', role: 'Back-end Developer' },
-    { id: 202, name: 'Pedro Costa', role: 'QA Engineer' },
+    { id: 201, name: "Ana Oliveira", role: "Back-end Developer" },
+    { id: 202, name: "Pedro Costa", role: "QA Engineer" },
   ],
   "3": [
-    { id: 301, name: 'Luiza Fernandes', role: 'Scrum Master' },
-    { id: 302, name: 'Rafael Pereira', role: 'Full-stack Developer' },
-    { id: 303, name: 'Fernanda Lima', role: 'Product Manager' },
+    { id: 301, name: "Luiza Fernandes", role: "Scrum Master" },
+    { id: 302, name: "Rafael Pereira", role: "Full-stack Developer" },
+    { id: 303, name: "Fernanda Lima", role: "Product Manager" },
   ],
 };
 
 // Simulação de loading
 const mockFetchProjects = () => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(mockProjects), 500);
   });
 };
 
 const mockFetchEmployees = (projectId: string | number) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const idStr = String(projectId);
     setTimeout(() => resolve(mockEmployeesByProject[idStr] || []), 500);
   });
@@ -66,7 +68,9 @@ const mockFetchEmployees = (projectId: string | number) => {
 const ChooseUserPage = () => {
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
   const [availableEmployees, setAvailableEmployees] = useState<Employee[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
@@ -84,7 +88,7 @@ const ChooseUserPage = () => {
         const data = await mockFetchProjects();
         setProjects(data as Project[]);
       } catch (error) {
-        console.error('Erro ao carregar projetos:', error);
+        console.error("Erro ao carregar projetos:", error);
       } finally {
         setLoadingProjects(false);
       }
@@ -96,7 +100,7 @@ const ChooseUserPage = () => {
   const handleProjectChange = async (_event: any, newValue: Project | null) => {
     setSelectedProject(newValue);
     setSelectedEmployee(null);
-    
+
     if (!newValue) {
       setAvailableEmployees([]);
       return;
@@ -109,7 +113,7 @@ const ChooseUserPage = () => {
       const data = await mockFetchEmployees(newValue.id);
       setAvailableEmployees(data as Employee[]);
     } catch (error) {
-      console.error('Erro ao carregar colaboradores:', error);
+      console.error("Erro ao carregar colaboradores:", error);
     } finally {
       setLoadingEmployees(false);
     }
@@ -118,11 +122,11 @@ const ChooseUserPage = () => {
 
   const handleSubmit = () => {
     if (selectedProject && selectedEmployee) {
-      navigate('/feedback', {
+      navigate("/feedback", {
         state: {
           project: selectedProject,
-          employee: selectedEmployee
-        }
+          employee: selectedEmployee,
+        },
       });
     }
   };
@@ -130,13 +134,13 @@ const ChooseUserPage = () => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f3f4f6',
-        p: 4
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f3f4f6",
+        p: 4,
       }}
     >
       <Container maxWidth="sm">
@@ -144,17 +148,17 @@ const ChooseUserPage = () => {
           variant="h3"
           component="h1"
           sx={{
-            fontWeight: 'bold',
-            color: '#01a982',
+            fontWeight: "bold",
+            color: "#01a982",
             mb: 4,
-            textAlign: 'center',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+            textAlign: "center",
+            textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
           }}
         >
-          Escolha o Colaborador
+          Escolha o Funcionário
         </Typography>
 
-        <Box sx={{ width: '100%', mb: 3 }}>
+        <Box sx={{ width: "100%", mb: 3 }}>
           <Autocomplete
             options={projects}
             loading={loadingProjects}
@@ -165,14 +169,16 @@ const ChooseUserPage = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Selecione o Projeto"
+                label="Selecione o Time"
                 variant="outlined"
                 fullWidth
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
                     <>
-                      {loadingProjects ? <CircularProgress color="inherit" size={20} /> : null}
+                      {loadingProjects ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
                       {params.InputProps.endAdornment}
                     </>
                   ),
@@ -182,27 +188,32 @@ const ChooseUserPage = () => {
           />
         </Box>
 
-        <Box sx={{ width: '100%', mb: 4 }}>
+        <Box sx={{ width: "100%", mb: 4 }}>
           <Autocomplete
             options={availableEmployees}
             loading={loadingEmployees}
             getOptionLabel={(option: Employee) => option.name}
-            groupBy={(option: Employee) => option.role} // Agrupa por cargo (opcional)
             value={selectedEmployee}
             onChange={(_event, newValue) => setSelectedEmployee(newValue)}
             disabled={!selectedProject}
-            noOptionsText={selectedProject ? "Nenhum colaborador encontrado" : "Selecione um projeto primeiro"}
+            noOptionsText={
+              selectedProject
+                ? "Nenhum funcionário encontrado"
+                : "Selecione um funcionário primeiro"
+            }
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Selecione o Colaborador"
+                label="Selecione o Funcionário"
                 variant="outlined"
                 fullWidth
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
                     <>
-                      {loadingEmployees ? <CircularProgress color="inherit" size={20} /> : null}
+                      {loadingEmployees ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
                       {params.InputProps.endAdornment}
                     </>
                   ),
@@ -213,7 +224,7 @@ const ChooseUserPage = () => {
               <li {...props} key={option.id}>
                 <div>
                   <strong>{option.name}</strong>
-                  <div style={{ fontSize: '0.8rem', color: '#666' }}>{option.role}</div>
+                  <div style={{ fontSize: "0.8rem", color: "#666" }}></div>
                 </div>
               </li>
             )}
@@ -229,18 +240,18 @@ const ChooseUserPage = () => {
           sx={{
             py: 1.5,
             px: 6,
-            fontSize: '1.1rem',
-            fontWeight: 'bold',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-            '&:hover': {
-              transform: 'translateY(-1px)',
-              boxShadow: '0 6px 8px -1px rgba(0, 0, 0, 0.1)'
+            fontSize: "1.1rem",
+            fontWeight: "bold",
+            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+            "&:hover": {
+              transform: "translateY(-1px)",
+              boxShadow: "0 6px 8px -1px rgba(0, 0, 0, 0.1)",
             },
-            transition: 'all 0.2s ease',
-            width: '100%',
-            maxWidth: '400px',
-            margin: '0 auto',
-            display: 'block'
+            transition: "all 0.2s ease",
+            width: "100%",
+            maxWidth: "400px",
+            margin: "0 auto",
+            display: "block",
           }}
         >
           Dar Feedback

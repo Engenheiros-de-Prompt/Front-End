@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   Box,
   Typography,
-  Container
+  Container,
 } from "@mui/material";
 
 const FeedbackForm = () => {
@@ -25,36 +25,50 @@ const FeedbackForm = () => {
       comments,
       isAnonymous,
     });
-    navigate('/feedback-succes'); // Redireciona para página de sucesso
+    navigate("/feedback-succes"); // Redireciona para página de sucesso
   };
 
   return (
-    <Container maxWidth="md" sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh',
-      py: 4
-    }}>
-      <Box sx={{
-        width: '100%',
-        maxWidth: 600,
-        bgcolor: 'background.paper',
-        boxShadow: 3,
-        borderRadius: 2,
-        p: 4
-      }}>
-        <Typography variant="h4" component="h2" gutterBottom sx={{ 
-          color: '#01a982', 
-          fontWeight: 'bold',
-          textAlign: 'center',
-          mb: 3
-        }}>
+    <Container
+      maxWidth="md"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        py: 4,
+      }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: 600,
+          bgcolor: "background.paper",
+          boxShadow: 3,
+          borderRadius: 2,
+          p: 4,
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h2"
+          gutterBottom
+          sx={{
+            color: "#01a982",
+            fontWeight: "bold",
+            textAlign: "center",
+            mb: 3,
+          }}
+        >
           Seu Feedback
         </Typography>
 
-        <Typography variant="body1" gutterBottom sx={{ mb: 4, textAlign: 'center' }}>
+        <Typography
+          variant="body1"
+          gutterBottom
+          sx={{ mb: 4, textAlign: "center" }}
+        >
           Avalie seu colega de 1 a 10, sendo 1 muito ruim e 10 excelente
         </Typography>
 
@@ -72,10 +86,23 @@ const FeedbackForm = () => {
             marks
             min={1}
             max={10}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              color: "#01a982",
+              "& .MuiSlider-thumb": {
+                color: "#01a982",
+              },
+              "& .MuiSlider-track": {
+                color: "#01a982",
+              },
+              "& .MuiSlider-rail": {
+                color: "#a2e2d4",
+              },
+            }}
           />
           <Typography variant="body2" color="text.secondary">
-            "Excelente domínio técnico no projeto Alpha, entregou soluções robustas e bem estruturadas."
+            "Excelente domínio técnico no projeto Alpha, entregou soluções
+            robustas e bem estruturadas."
           </Typography>
         </Box>
 
@@ -93,10 +120,23 @@ const FeedbackForm = () => {
             marks
             min={1}
             max={10}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              color: "#01a982",
+              "& .MuiSlider-thumb": {
+                color: "#01a982",
+              },
+              "& .MuiSlider-track": {
+                color: "#01a982",
+              },
+              "& .MuiSlider-rail": {
+                color: "#a2e2d4",
+              },
+            }}
           />
           <Typography variant="body2" color="text.secondary">
-            "Comunicação excepcional durante as reuniões do projeto, sempre claro e objetivo nas explicações."
+            "Comunicação excepcional durante as reuniões do projeto, sempre
+            claro e objetivo nas explicações."
           </Typography>
         </Box>
 
@@ -117,7 +157,12 @@ const FeedbackForm = () => {
             <Checkbox
               checked={isAnonymous}
               onChange={(e) => setIsAnonymous(e.target.checked)}
-              color="primary"
+              sx={{
+                color: "#01a982",
+                "&.Mui-checked": {
+                  color: "#01a982",
+                },
+              }}
             />
           }
           label="Enviar como anônimo"
@@ -132,12 +177,12 @@ const FeedbackForm = () => {
           onClick={handleSubmit}
           sx={{
             py: 1.5,
-            fontSize: '1.1rem',
-            fontWeight: 'bold',
+            fontSize: "1.1rem",
+            fontWeight: "bold",
             boxShadow: 2,
-            '&:hover': {
-              boxShadow: 4
-            }
+            "&:hover": {
+              boxShadow: 4,
+            },
           }}
         >
           Enviar Feedback
