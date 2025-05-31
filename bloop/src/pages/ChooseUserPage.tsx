@@ -9,6 +9,7 @@ import {
   Container,
   CircularProgress,
 } from "@mui/material";
+import userService from "../services/userService";
 
 // ==============================================
 
@@ -18,17 +19,15 @@ type Project = {
   name: string;
 };
 
-type Employee = {
+type User = {
   id: number;
   name: string;
-  role: string;
+  Manager: boolean;
 };
 // DADOS MOCKADOS (substituir por chamadas API)
 // ==============================================
 const mockProjects = [
-  { id: 1, name: "Projeto Alpha" },
-  { id: 2, name: "Projeto Beta" },
-  { id: 3, name: "Projeto Gamma" },
+  { id: 1, name: "Projeto Alpha" }
 ];
 
 const mockEmployeesByProject: {
@@ -38,16 +37,7 @@ const mockEmployeesByProject: {
     { id: 101, name: "João Silva", role: "Desenvolvedor Front-end" },
     { id: 102, name: "Maria Souza", role: "UX Designer" },
     { id: 103, name: "Carlos Mendes", role: "Product Owner" },
-  ],
-  "2": [
-    { id: 201, name: "Ana Oliveira", role: "Back-end Developer" },
-    { id: 202, name: "Pedro Costa", role: "QA Engineer" },
-  ],
-  "3": [
-    { id: 301, name: "Luiza Fernandes", role: "Scrum Master" },
-    { id: 302, name: "Rafael Pereira", role: "Full-stack Developer" },
-    { id: 303, name: "Fernanda Lima", role: "Product Manager" },
-  ],
+  ]
 };
 
 // Simulação de loading
@@ -66,12 +56,30 @@ const mockFetchEmployees = (projectId: string | number) => {
 // ==============================================
 
 const ChooseUserPage = () => {
+
+  const [teams, setTeams] = useState<any>(null)
+  const [teamMembers, setTeamMembers] = useState<User[]>([])
+
+  const userAPI = userService();
+
+  const fetchTeamMembers = async () => {
+    try {
+      const response = await userAPI.getUsersByteamId("1");
+      console.log("XXXXXXXX", response)
+      setTeamMembers(response);
+    } catch (error) {
+      console.error("Erro ao carregar times:", error);
+    }
+  }
+
+  fetchTeamMembers();
+
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+  const [selectedEmployee, setSelectedEmployee] = useState<User | null>(
     null,
   );
-  const [availableEmployees, setAvailableEmployees] = useState<Employee[]>([]);
+  const [availableEmployees, setAvailableEmployees] = useState<User[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(false);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -111,7 +119,7 @@ const ChooseUserPage = () => {
       // Substituir por: const response = await fetch(`/api/projects/${newValue.id}/employees`);
       // const data = await response.json();
       const data = await mockFetchEmployees(newValue.id);
-      setAvailableEmployees(data as Employee[]);
+      setAvailableEmployees(data as User[]);
     } catch (error) {
       console.error("Erro ao carregar colaboradores:", error);
     } finally {
@@ -190,9 +198,9 @@ const ChooseUserPage = () => {
 
         <Box sx={{ width: "100%", mb: 4 }}>
           <Autocomplete
-            options={availableEmployees}
+            options={teamMembers}
             loading={loadingEmployees}
-            getOptionLabel={(option: Employee) => option.name}
+            getOptionLabel={(option: User) => option.name}
             value={selectedEmployee}
             onChange={(_event, newValue) => setSelectedEmployee(newValue)}
             disabled={!selectedProject}
@@ -220,7 +228,7 @@ const ChooseUserPage = () => {
                 }}
               />
             )}
-            renderOption={(props, option: Employee) => (
+            renderOption={(props, option: User) => (
               <li {...props} key={option.id}>
                 <div>
                   <strong>{option.name}</strong>

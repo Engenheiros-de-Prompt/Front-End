@@ -3,11 +3,13 @@ import axios from 'axios';
 
 
 export default function userService() {
-    const API_URL = 'http://localhost:3000/api/users';
+    const API_URL = 'http://localhost:3000/user';
 
     const getUsersByteamId = async (teamId: string): Promise<any> => {
+        console.log("Response from getUsersByteamId:", response.data);
         try {
             const response = await axios.get(`${API_URL}/getUsersByteamId/${teamId}`);
+            
             return response.data;
         } catch (error) {
             console.error('Error fetching users by team:', error);
