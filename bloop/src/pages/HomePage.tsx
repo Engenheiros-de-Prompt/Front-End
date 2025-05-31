@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import IconButton from "@mui/material/IconButton";
+
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -13,11 +16,27 @@ const HomePage = () => {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        backgroundColor: "#f3f4f6",
         p: 4,
         textAlign: "center",
+        position: 'relative', // Adicionado para posicionamento absoluto do ícone
       }}
     >
+      {/* Ícone de perfil no canto superior direito */}
+      <IconButton
+        aria-label="perfil"
+        onClick={() => navigate("/perfil")}
+        sx={{
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          color: '#01a982',
+          transition: 'all 0.2s ease',
+        }}
+      >
+        <AccountCircleIcon fontSize="large" />
+        <p>Meu Perfil</p>
+      </IconButton>
+
       <h1
         className="text-5xl font-bold mb-6"
         style={{
