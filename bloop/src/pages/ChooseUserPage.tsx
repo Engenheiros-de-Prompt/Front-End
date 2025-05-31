@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -10,9 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-// ==============================================
-
-// Tipos para projetos e colaboradores
+// Tipos para projetos (times) e funcionários
 type Project = {
   id: number;
   name: string;
@@ -23,47 +21,6 @@ type Employee = {
   name: string;
   role: string;
 };
-// DADOS MOCKADOS (substituir por chamadas API)
-// ==============================================
-const mockProjects = [
-  { id: 1, name: "Projeto Alpha" },
-  { id: 2, name: "Projeto Beta" },
-  { id: 3, name: "Projeto Gamma" },
-];
-
-const mockEmployeesByProject: {
-  [key: string]: { id: number; name: string; role: string }[];
-} = {
-  "1": [
-    { id: 101, name: "João Silva", role: "Desenvolvedor Front-end" },
-    { id: 102, name: "Maria Souza", role: "UX Designer" },
-    { id: 103, name: "Carlos Mendes", role: "Product Owner" },
-  ],
-  "2": [
-    { id: 201, name: "Ana Oliveira", role: "Back-end Developer" },
-    { id: 202, name: "Pedro Costa", role: "QA Engineer" },
-  ],
-  "3": [
-    { id: 301, name: "Luiza Fernandes", role: "Scrum Master" },
-    { id: 302, name: "Rafael Pereira", role: "Full-stack Developer" },
-    { id: 303, name: "Fernanda Lima", role: "Product Manager" },
-  ],
-};
-
-// Simulação de loading
-const mockFetchProjects = () => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(mockProjects), 500);
-  });
-};
-
-const mockFetchEmployees = (projectId: string | number) => {
-  return new Promise((resolve) => {
-    const idStr = String(projectId);
-    setTimeout(() => resolve(mockEmployeesByProject[idStr] || []), 500);
-  });
-};
-// ==============================================
 
 const ChooseUserPage = () => {
   const navigate = useNavigate();
@@ -76,19 +33,16 @@ const ChooseUserPage = () => {
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
 
-  // ==============================================
-  // INTEGRAÇÃO REAL (substituir pelos seus endpoints)
-  // ==============================================
-  React.useEffect(() => {
+  // Buscar times do backend
+  useEffect(() => {
     const fetchProjects = async () => {
       setLoadingProjects(true);
       try {
-        // Substituir por: const response = await fetch('/api/projects');
-        // const data = await response.json();
-        const data = await mockFetchProjects();
-        setProjects(data as Project[]);
+        const response = await fetch("http://localhost:3000/team");
+        const data = await response.json();
+        setProjects(data);
       } catch (error) {
-        console.error("Erro ao carregar projetos:", error);
+        console.error("Erro ao carregar times:", error);
       } finally {
         setLoadingProjects(false);
       }
@@ -96,6 +50,23 @@ const ChooseUserPage = () => {
 
     fetchProjects();
   }, []);
+
+  // Buscar colaboradores de um time
+  const fetchEmployees = async (teamId: number) => {
+    setLoadingEmployees(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/user/getUsersByteamId/${teamId}`,
+      );
+      const data = await response.json();
+      setAvailableEmployees(data);
+    } catch (error) {
+      console.error("Erro ao carregar colaboradores:", error);
+      setAvailableEmployees([]);
+    } finally {
+      setLoadingEmployees(false);
+    }
+  };
 
   const handleProjectChange = async (_event: any, newValue: Project | null) => {
     setSelectedProject(newValue);
@@ -106,19 +77,8 @@ const ChooseUserPage = () => {
       return;
     }
 
-    setLoadingEmployees(true);
-    try {
-      // Substituir por: const response = await fetch(`/api/projects/${newValue.id}/employees`);
-      // const data = await response.json();
-      const data = await mockFetchEmployees(newValue.id);
-      setAvailableEmployees(data as Employee[]);
-    } catch (error) {
-      console.error("Erro ao carregar colaboradores:", error);
-    } finally {
-      setLoadingEmployees(false);
-    }
+    await fetchEmployees(newValue.id);
   };
-  // ==============================================
 
   const handleSubmit = () => {
     if (selectedProject && selectedEmployee) {
@@ -165,7 +125,7 @@ const ChooseUserPage = () => {
             getOptionLabel={(option: Project) => option.name}
             value={selectedProject}
             onChange={handleProjectChange}
-            noOptionsText="Nenhum projeto encontrado"
+            noOptionsText="Nenhum time encontrado"
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -176,9 +136,9 @@ const ChooseUserPage = () => {
                   ...params.InputProps,
                   endAdornment: (
                     <>
-                      {loadingProjects ? (
+                      {loadingProjects && (
                         <CircularProgress color="inherit" size={20} />
-                      ) : null}
+                      )}
                       {params.InputProps.endAdornment}
                     </>
                   ),
@@ -199,7 +159,7 @@ const ChooseUserPage = () => {
             noOptionsText={
               selectedProject
                 ? "Nenhum funcionário encontrado"
-                : "Selecione um funcionário primeiro"
+                : "Selecione um time primeiro"
             }
             renderInput={(params) => (
               <TextField
@@ -211,9 +171,9 @@ const ChooseUserPage = () => {
                   ...params.InputProps,
                   endAdornment: (
                     <>
-                      {loadingEmployees ? (
+                      {loadingEmployees && (
                         <CircularProgress color="inherit" size={20} />
-                      ) : null}
+                      )}
                       {params.InputProps.endAdornment}
                     </>
                   ),
@@ -224,7 +184,9 @@ const ChooseUserPage = () => {
               <li {...props} key={option.id}>
                 <div>
                   <strong>{option.name}</strong>
-                  <div style={{ fontSize: "0.8rem", color: "#666" }}></div>
+                  <div style={{ fontSize: "0.8rem", color: "#666" }}>
+                    {option.role}
+                  </div>
                 </div>
               </li>
             )}
